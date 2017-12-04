@@ -1,7 +1,10 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
-// Import the root reducer (which imports all subreducers)
-import rootReducer from '../reducers';
+/**
+ * @providesModule ReduxStore
+ */
+import { createStore, applyMiddleware, compose } from "redux";
+import thunk from "redux-thunk";
+
+import rootReducer from "ReduxReducers";
 
 // Initializing with middleware
 const createStoreWithMiddleware = applyMiddleware(thunk);
