@@ -19,7 +19,6 @@ class _MainPage extends Component {
 		disableSideBar: PropTypes.func,
 		setCurrentScene: PropTypes.func,
 		user: PropTypes.object,
-		setLanguage: PropTypes.func,
 	};
 
 	constructor(props) {
@@ -36,132 +35,93 @@ class _MainPage extends Component {
 		const { sidebar } = this.props;
 		switch (sceneIndex) {
 			case 0:
-				if (sidebar.currentScene === "MainScene") {
+				if (sidebar.currentScene === "HomeScene" || sidebar.currentScene === "HomeDetailScene") {
 					return;
 				} else {
 					const genNavigateAction = NavigationActions.reset({
 						index: 0,
-						actions: [NavigationActions.navigate({ routeName: "Main" })]
+						actions: [NavigationActions.navigate({ routeName: "Home" })]
 					});
 					this.routingRef.dispatch(genNavigateAction);
 				}
 				break;
 			case 1:
-				if (sidebar.currentScene === "NewsUpdateScene") {
+				if (sidebar.currentScene === "ChatScene") {
 					return;
 				} else {
 					const genNavigateAction = NavigationActions.reset({
 						index: 0,
-						actions: [NavigationActions.navigate({ routeName: "NewsUpdate" })]
+						actions: [NavigationActions.navigate({ routeName: "Chat" })]
 					});
 					this.routingRef.dispatch(genNavigateAction);
 				}
 				break;
-			case 2:
-				if (sidebar.currentScene === "GenealogyScene" || sidebar.currentScene === "RegisterNewMemberScene" || sidebar.currentScene === "GroupScene") {
-					return;
-				} else {
-					const genNavigateAction = NavigationActions.reset({
-						index: 0,
-						actions: [NavigationActions.navigate({ routeName: "Genealogy" })]
-					});
-					this.routingRef.dispatch(genNavigateAction);
-				}
-				break;
+      case 2:
+        if (sidebar.currentScene === "CartScene") {
+          return;
+        } else {
+          const genNavigateAction = NavigationActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: "Cart" })]
+          });
+          this.routingRef.dispatch(genNavigateAction);
+        }
+        break;
 			case 3:
-				if (
-					sidebar.currentScene === "TradeScene"
-				) {
+				if (sidebar.currentScene === "SettingsScene") {
 					return;
 				} else {
 					const editNavigateAction = NavigationActions.reset({
 						index: 0,
-						actions: [NavigationActions.navigate({ routeName: "Trade" })]
+						actions: [NavigationActions.navigate({ routeName: "Settings" })]
 					});
 					this.routingRef.dispatch(editNavigateAction);
 				}
 				break;
 			case 4:
-				if (sidebar.currentScene === "ExchangeMarketScene") {
+				if (sidebar.currentScene === "PaymentsScene") {
 					return;
 				} else {
 					const editNavigateAction = NavigationActions.reset({
 						index: 0,
 						actions: [
-							NavigationActions.navigate({ routeName: "ExchangeMarket" })
+							NavigationActions.navigate({ routeName: "Payments" })
 						]
 					});
 					this.routingRef.dispatch(editNavigateAction);
 				}
 				break;
-			// case 5:
-			// 	if (sidebar.currentScene === "ProductScene") {
-			// 		return;
-			// 	} else {
-			// 		const editNavigateAction = NavigationActions.reset({
-			// 			index: 0,
-			// 			actions: [NavigationActions.navigate({ routeName: "Product" })]
-			// 		});
-			// 		this.routingRef.dispatch(editNavigateAction);
-			// 	}
-			// 	break;
 			case 5:
-				if (sidebar.currentScene === "WalletScene" || sidebar.currentScene === "AddBankScene") {
+				if (sidebar.currentScene === "BlogScene") {
 					return;
 				} else {
 					const editNavigateAction = NavigationActions.reset({
 						index: 0,
-						actions: [NavigationActions.navigate({ routeName: "Wallet" })]
+						actions: [NavigationActions.navigate({ routeName: "Blog" })]
 					});
 					this.routingRef.dispatch(editNavigateAction);
 				}
 				break;
 			case 6:
-				if (sidebar.currentScene === "ReportScene") {
+				if (sidebar.currentScene === "AboutUsScene") {
 					return;
 				} else {
 					const editNavigateAction = NavigationActions.reset({
 						index: 0,
 						actions: [
-							NavigationActions.navigate({ routeName: "Report" })
+							NavigationActions.navigate({ routeName: "AboutUs" })
 						]
 					});
 					this.routingRef.dispatch(editNavigateAction);
 				}
 				break;
 			case 7:
-				if (sidebar.currentScene === "HelpDeskScene" || sidebar.currentScene === "AddTicketScene") {
-					return;
-				} else {
-					const editNavigateAction = NavigationActions.reset({
-						index: 0,
-						actions: [NavigationActions.navigate({ routeName: "HelpDesk" })]
-					});
-					this.routingRef.dispatch(editNavigateAction);
-				}
+        const resetAction = NavigationActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({ routeName: 'Login' })],
+        });
+        this.routingRef.dispatch(resetAction);
 				break;
-			case 8:
-				if (sidebar.currentScene === "MyAccountScene") {
-					return;
-				} else {
-					const editNavigateAction = NavigationActions.reset({
-						index: 0,
-						actions: [NavigationActions.navigate({ routeName: "MyAccount" })]
-					});
-					this.routingRef.dispatch(editNavigateAction);
-				}
-				break;
-			// case 9:
-				// if (sidebar.currentScene === "MyAccountScene") {
-				// 	return;
-				// } else {
-				// 	const editNavigateAction = NavigationActions.reset({
-				// 		index: 0,
-				// 		actions: [NavigationActions.navigate({ routeName: "MyAccount" })]
-				// 	});
-				// 	this.routingRef.dispatch(editNavigateAction);
-				// }
-				// break;
 			default:
 				break;
 		}
@@ -169,10 +129,6 @@ class _MainPage extends Component {
 
 	setCurrentScene = scene => {
 		this.props.setCurrentScene(scene);
-	};
-
-	setLanguage = language => {
-		this.props.setLanguage(language);
 	};
 
 	showSideBar = bFlag => {
@@ -200,7 +156,6 @@ class _MainPage extends Component {
 					showSideBar={this.showSideBar}
 					disableSideBar={this.disableSideBar}
 					user={user}
-					setLanguage={this.setLanguage}
 					sidebar={this.props.sidebar}
 				>
 					<Routing ref={ref => (this.routingRef = ref)} />

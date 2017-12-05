@@ -15,8 +15,9 @@ import {
 	DARK_COLOR,
 	DARKBLACK_COLOR,
 	YELLOW_COLOR,
+  PRIMARY_COLOR,
+  SECONDARY_COLOR,
 } from "AppColors";
-import { LabelText } from "AppFonts";
 import { GlobalStorage, RequestApi } from "AppUtilities";
 
 const styles = StyleSheet.create({
@@ -24,16 +25,19 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	headerContainer: {
-		height: 70,
+		height: 150,
 		paddingTop: 10,
-		backgroundColor: 'steelblue',
+		backgroundColor: SECONDARY_COLOR,
 		flexDirection: "row",
+    justifyContent: 'center',
 		alignItems: "center",
-		paddingHorizontal: 15
 	},
 	boldText: {
 		fontWeight: "bold",
-		lineHeight: 20
+		lineHeight: 20,
+    color: "white",
+    fontSize: 13,
+    marginLeft: 10
 	},
 	headerSubContainer: {
 		marginTop: 5,
@@ -59,7 +63,7 @@ const styles = StyleSheet.create({
 	},
 	contentContainer: {
 		flex: 1,
-		backgroundColor: DARK_COLOR,
+		backgroundColor: SECONDARY_COLOR,
 		paddingTop: 15,
 	},
 	sportsContainer: {
@@ -93,10 +97,6 @@ const styles = StyleSheet.create({
 	nameContainer: {
 		marginLeft: 15
 	},
-	langImg: {
-		width: 30,
-		height: 22,
-	},
 	loadingScene: {
 		position: "absolute",
 		width: AppConfig.windowWidth,
@@ -118,7 +118,6 @@ export class Menu extends Component {
 		isOpen: React.PropTypes.bool,
 		user: PropTypes.object,
 		sidebar: PropTypes.object,
-		setLanguage: PropTypes.func.isRequired,
 	};
 	static defaultProps = {
 		isOpen: false
@@ -129,18 +128,14 @@ export class Menu extends Component {
 		this.state = {
 			isShowSortsContainer: false,
 			MENU_ITEMS: [
-				{ index: 0, title: AppConfig.global_string.home },
-				{ index: 1, title: AppConfig.global_string.newsupdate },
-				{ index: 2, title: AppConfig.global_string.genealogy },
-				{ index: 3, title: AppConfig.global_string.mgntrade },
-				{ index: 4, title: AppConfig.global_string.exchangemarket },
-				// { index: 5, title: AppConfig.global_string.products },
-				{ index: 5, title: AppConfig.global_string.ewallet },
-				{ index: 6, title: AppConfig.global_string.report },
-				{ index: 7, title: AppConfig.global_string.helpdesk },
-				{ index: 8, title: AppConfig.global_string.myaccount }
+				{ index: 1, title: "Chat" },
+				{ index: 2, title: "Cart" },
+				{ index: 3, title: "Settings" },
+				{ index: 4, title: "Payments" },
+				{ index: 5, title: "Blog" },
+				{ index: 6, title: "About Us" },
+				{ index: 7, title: "Log Out" }
 			],
-			lang: 'en',
 			isLoading: false,
 		};
 		this.dataSource = new ListView.DataSource({
@@ -149,58 +144,22 @@ export class Menu extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if (nextProps.sidebar.language === 'en') {
-			this.setState({ lang: 'en', isShowSortsContainer: false, MENU_ITEMS: [
-				{ index: 0, title: AppConfig.global_string.home },
-				{ index: 1, title: AppConfig.global_string.newsupdate },
-				{ index: 2, title: AppConfig.global_string.genealogy },
-				{ index: 3, title: AppConfig.global_string.mgntrade },
-				{ index: 4, title: AppConfig.global_string.exchangemarket },
-				// { index: 5, title: AppConfig.global_string.products },
-				{ index: 5, title: AppConfig.global_string.ewallet },
-				{ index: 6, title: AppConfig.global_string.report },
-				{ index: 7, title: AppConfig.global_string.helpdesk },
-				{ index: 8, title: AppConfig.global_string.myaccount }
-			], });
-		} else if (nextProps.sidebar.language === 'ch') {
-			this.setState({ lang: 'ch', isShowSortsContainer: false, MENU_ITEMS: [
-				{ index: 0, title: AppConfig.global_string.home },
-				{ index: 1, title: AppConfig.global_string.newsupdate },
-				{ index: 2, title: AppConfig.global_string.genealogy },
-				{ index: 3, title: AppConfig.global_string.mgntrade },
-				{ index: 4, title: AppConfig.global_string.exchangemarket },
-				// { index: 5, title: AppConfig.global_string.products },
-				{ index: 5, title: AppConfig.global_string.ewallet },
-				{ index: 6, title: AppConfig.global_string.report },
-				{ index: 7, title: AppConfig.global_string.helpdesk },
-				{ index: 8, title: AppConfig.global_string.myaccount }
-			], });
-		} else if (nextProps.sidebar.language === 'ml') {
-			this.setState({ lang: 'ml', isShowSortsContainer: false, MENU_ITEMS: [
-				{ index: 0, title: AppConfig.global_string.home },
-				{ index: 1, title: AppConfig.global_string.newsupdate },
-				{ index: 2, title: AppConfig.global_string.genealogy },
-				{ index: 3, title: AppConfig.global_string.mgntrade },
-				{ index: 4, title: AppConfig.global_string.exchangemarket },
-				// { index: 5, title: AppConfig.global_string.products },
-				{ index: 5, title: AppConfig.global_string.ewallet },
-				{ index: 6, title: AppConfig.global_string.report },
-				{ index: 7, title: AppConfig.global_string.helpdesk },
-				{ index: 8, title: AppConfig.global_string.myaccount }
-			], });
-		}
+		this.setState({ isShowSortsContainer: false, MENU_ITEMS: [
+      { index: 1, title: "Chat" },
+      { index: 2, title: "Cart" },
+      { index: 3, title: "Settings" },
+      { index: 4, title: "Payments" },
+      { index: 5, title: "Blog" },
+      { index: 6, title: "About Us" },
+      { index: 7, title: "Log Out" }
+		], });
 	}
 
 	componentDidMount() {
 	}
 
-	onShowDetail = () => {
-		const { isShowSortsContainer } = this.state;
-		this.setState({ isShowSortsContainer: !isShowSortsContainer });
-	};
-
-	onShowProfile = () => {
-		this.props.routeScene(8);
+  onShowHome = () => {
+		this.props.routeScene(0);
 		this.props.showSideBar(false);
 	};
 
@@ -210,56 +169,71 @@ export class Menu extends Component {
 	};
 
 	renderHeader = () => {
-		const { lang, isShowSortsContainer } = this.state;
-		const iconName = isShowSortsContainer
-			? require("img/icon_up_white.png")
-			: require("img/icon_down_white.png");
-		const { user } = this.props;
 		return (
 			<View style={styles.headerContainer}>
 				<TouchableOpacity
-					style={styles.headerSubContainer}
-					onPress={this.onShowProfile}
+					onPress={this.onShowHome}
 				>
-					{user.avatar === null
-						? <Image
-							source={require("img/img_noprofileimage.png")}
-							style={styles.avatarImg}
-						/>
-						: <Image
-							source={{
-								uri: user.avatar.path,
-								width: user.avatar.width,
-								height: user.avatar.height,
-								mime: user.avatar.mime
-							}}
-							style={styles.avatarImg}
-						/>}
-
-					<View style={styles.nameContainer}>
-						<LabelText fontSize={14} color={"white"} style={styles.boldText}>
-							{AppConfig.global_string.myaccount}
-						</LabelText>
-					</View>
+          <Image source={require('img/img_splash_icon.png')} style={{ width: AppConfig.windowWidth * 0.4, height: AppConfig.windowWidth * 0.4 * 91 / 197, resizeMode: 'cover' }} />
 				</TouchableOpacity>
-
-				<TouchableOpacity style={{ marginLeft: 80 }} onPress={this.onShowDetail}>
-					<Image style={styles.langImg} source={lang === 'en' ? require('img/lang_en.png') : lang === 'ch' ? require('img/lang_ch.png') : require('img/lang_ml.png')}/>
-				</TouchableOpacity>
-				<View style={styles.space} />
 			</View>
 		);
 	};
 
 	renderMenuItem = menuItem => {
+	  let render_image = [];
+
+	  if (menuItem.title === "Chat") {
+      render_image.push(
+        <Image key="render_image_home" source={require('img/img_sidemenu_chat.png')} style={{ width: 20, height: 19, resizeMode: 'cover'}} />
+      );
+    }
+    
+    if (menuItem.title === "Cart") {
+      render_image.push(
+        <Image key="render_image_cart" source={require('img/img_sidemenu_cart.png')} style={{ width: 20, height: 20, resizeMode: 'cover'}} />
+      );
+    }
+    
+    if (menuItem.title === "Settings") {
+      render_image.push(
+        <Image key="render_image_settings" source={require('img/img_sidemenu_settings.png')} style={{ width: 20, height: 20, resizeMode: 'cover'}} />
+      );
+    }
+    
+    if (menuItem.title === "Payments") {
+      render_image.push(
+        <Image key="render_image_payments" source={require('img/img_sidemenu_payments.png')} style={{ width: 20, height: 16, resizeMode: 'cover', marginTop: 2}} />
+      );
+    }
+    
+    if (menuItem.title === "Blog") {
+      render_image.push(
+        <Image key="render_image_blog" source={require('img/img_sidemenu_blog.png')} style={{ width: 20, height: 20, resizeMode: 'cover'}} />
+      );
+    }
+    
+    if (menuItem.title === "About Us") {
+      render_image.push(
+        <Image key="render_image_aboutus" source={require('img/img_sidemenu_info.png')} style={{ width: 20, height: 20, resizeMode: 'cover'}} />
+      );
+    }
+    
+    if (menuItem.title === "Log Out") {
+      render_image.push(
+        <Image key="render_image_logout" source={require('img/img_sidemenu_logout.png')} style={{ width: 20, height: 20, resizeMode: 'cover'}} />
+      );
+    }
+    
 		return (
 			<TouchableOpacity
 				style={styles.itemContainer}
 				onPress={() => this.onShowMenu(menuItem)}
 			>
-				<LabelText style={styles.boldText} color={"white"} fontSize={13}>
+        { render_image }
+				<Text style={styles.boldText}>
 					{menuItem.title}
-				</LabelText>
+				</Text>
 				{
 					menuItem.title === "News Update" &&
 						<View style={{width: 20, height: 20, borderRadius: 10, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', marginLeft: 20, }}>
@@ -268,182 +242,6 @@ export class Menu extends Component {
 				}
 			</TouchableOpacity>
 		);
-	};
-
-	onEn = () => {
-		const { lang } = this.state;
-		if (lang === 'en') {
-			AppConfig.global_string.setLanguage('en');
-			this.props.setLanguage('en');
-			this.setState({ lang: 'en', isShowSortsContainer: false, MENU_ITEMS: [
-				{ index: 0, title: AppConfig.global_string.home },
-				{ index: 1, title: AppConfig.global_string.newsupdate },
-				{ index: 2, title: AppConfig.global_string.genealogy },
-				{ index: 3, title: AppConfig.global_string.mgntrade },
-				{ index: 4, title: AppConfig.global_string.exchangemarket },
-				// { index: 5, title: AppConfig.global_string.products },
-				{ index: 5, title: AppConfig.global_string.ewallet },
-				{ index: 6, title: AppConfig.global_string.report },
-				{ index: 7, title: AppConfig.global_string.helpdesk },
-				{ index: 8, title: AppConfig.global_string.myaccount }
-			],  });
-		} else {
-			this.setState({ isLoading: true });
-
-			let body = new FormData();
-			body.append("app_id", 'amgames!@#123');
-			body.append("access_token", AppConfig.accessToken);
-			body.append("language", "en");
-
-			RequestApi(
-				"member_menu/select_language",
-				body,
-				"POST"
-			)
-				.then(response => {
-					if (response.status === "Success") {
-						AppConfig.global_string.setLanguage('en');
-						this.props.setLanguage('en');
-						this.setState({ lang: 'en', isShowSortsContainer: false, isLoading: false, MENU_ITEMS: [
-							{ index: 0, title: AppConfig.global_string.home },
-							{ index: 1, title: AppConfig.global_string.newsupdate },
-							{ index: 2, title: AppConfig.global_string.genealogy },
-							{ index: 3, title: AppConfig.global_string.mgntrade },
-							{ index: 4, title: AppConfig.global_string.exchangemarket },
-							// { index: 5, title: AppConfig.global_string.products },
-							{ index: 5, title: AppConfig.global_string.ewallet },
-							{ index: 6, title: AppConfig.global_string.report },
-							{ index: 7, title: AppConfig.global_string.helpdesk },
-							{ index: 8, title: AppConfig.global_string.myaccount }
-						],  });
-					} else {
-						this.setState({ isLoading: false });
-					}
-				})
-				.catch(error => {
-					alert(error);
-					this.setState({ isLoading: false });
-				});
-		}
-	};
-
-	onCh = () => {
-		const { lang } = this.state;
-		if (lang === 'ch') {
-			AppConfig.global_string.setLanguage('ch');
-			this.props.setLanguage('ch');
-			this.setState({ lang: 'ch', isShowSortsContainer: false, MENU_ITEMS: [
-				{ index: 0, title: AppConfig.global_string.home },
-				{ index: 1, title: AppConfig.global_string.newsupdate },
-				{ index: 2, title: AppConfig.global_string.genealogy },
-				{ index: 3, title: AppConfig.global_string.mgntrade },
-				{ index: 4, title: AppConfig.global_string.exchangemarket },
-				// { index: 5, title: AppConfig.global_string.products },
-				{ index: 5, title: AppConfig.global_string.ewallet },
-				{ index: 6, title: AppConfig.global_string.report },
-				{ index: 7, title: AppConfig.global_string.helpdesk },
-				{ index: 8, title: AppConfig.global_string.myaccount }
-			],  });
-		} else {
-			this.setState({ isLoading: true });
-
-			let body = new FormData();
-			body.append("app_id", 'amgames!@#123');
-			body.append("access_token", AppConfig.accessToken);
-			body.append("language", "si_cn");
-
-			RequestApi(
-				"member_menu/select_language",
-				body,
-				"POST"
-			)
-				.then(response => {
-					if (response.status === "Success") {
-						AppConfig.global_string.setLanguage('ch');
-						this.props.setLanguage('ch');
-						this.setState({ lang: 'ch', isShowSortsContainer: false, isLoading: false, MENU_ITEMS: [
-							{ index: 0, title: AppConfig.global_string.home },
-							{ index: 1, title: AppConfig.global_string.newsupdate },
-							{ index: 2, title: AppConfig.global_string.genealogy },
-							{ index: 3, title: AppConfig.global_string.mgntrade },
-							{ index: 4, title: AppConfig.global_string.exchangemarket },
-							// { index: 5, title: AppConfig.global_string.products },
-							{ index: 5, title: AppConfig.global_string.ewallet },
-							{ index: 6, title: AppConfig.global_string.report },
-							{ index: 7, title: AppConfig.global_string.helpdesk },
-							{ index: 8, title: AppConfig.global_string.myaccount }
-						],  });
-					} else {
-						this.setState({ isLoading: false });
-					}
-				})
-				.catch(error => {
-					alert(error);
-					this.setState({ isLoading: false });
-				});
-		}
-	};
-
-	onMl = () => {
-		this.setState({ isLoading: true });
-
-		let body = new FormData();
-		body.append("app_id", 'amgames!@#123');
-		body.append("access_token", AppConfig.accessToken);
-		body.append("language", "Bahasa");
-
-		RequestApi(
-			"member_menu/select_language",
-			body,
-			"POST"
-		)
-			.then(response => {
-				if (response.status === "Success") {
-					AppConfig.global_string.setLanguage('ml');
-					this.props.setLanguage('ml');
-					this.setState({ lang: 'ml', isShowSortsContainer: false, isLoading: false, MENU_ITEMS: [
-						{ index: 0, title: AppConfig.global_string.home },
-						{ index: 1, title: AppConfig.global_string.newsupdate },
-						{ index: 2, title: AppConfig.global_string.genealogy },
-						{ index: 3, title: AppConfig.global_string.mgntrade },
-						{ index: 4, title: AppConfig.global_string.exchangemarket },
-						// { index: 5, title: AppConfig.global_string.products },
-						{ index: 5, title: AppConfig.global_string.ewallet },
-						{ index: 6, title: AppConfig.global_string.report },
-						{ index: 7, title: AppConfig.global_string.helpdesk },
-						{ index: 8, title: AppConfig.global_string.myaccount }
-					],  });
-				} else {
-					this.setState({ isLoading: false });
-				}
-			})
-			.catch(error => {
-				alert(error);
-				this.setState({ isLoading: false });
-			});
-	};
-
-	renderLang = () => {
-		const { isShowSortsContainer } = this.state;
-		if (isShowSortsContainer) {
-			return (
-				<View style={{ height: 50, backgroundColor: 'white', flexDirection: 'row' }}>
-					<TouchableOpacity style={{width: 30, height: 22, marginLeft: 30, marginTop: 14}} onPress={this.onEn}>
-						<Image source={require('img/lang_en.png')} style={{width: 30, height: 22}}/>
-					</TouchableOpacity>
-					<TouchableOpacity style={{width: 30, height: 22, marginLeft: 40, marginTop: 14}} onPress={this.onCh}>
-						<Image source={require('img/lang_ch.png')} style={{width: 30, height: 22}}/>
-					</TouchableOpacity>
-					<TouchableOpacity style={{width: 30, height: 22, marginLeft: 40, marginTop: 14}} onPress={this.onMl}>
-						<Image source={require('img/lang_ml.png')} style={{width: 30, height: 22}}/>
-					</TouchableOpacity>
-				</View>
-			)
-		} else {
-			return (
-				<View/>
-			)
-		}
 	};
 
 	renderContent = () => {
@@ -465,7 +263,6 @@ export class Menu extends Component {
 		return (
 			<View style={styles.container}>
 				{this.renderHeader()}
-				{this.renderLang()}
 				{this.renderContent()}
 				{
 					isLoading &&

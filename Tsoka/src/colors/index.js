@@ -17,3 +17,8 @@ export const DARKBLACK_COLOR = "#2f2f2f";
 export const YELLOW_COLOR = "#ffba00";
 export const GRAY1_COLOR = "#dedede";
 export const GRAY_COLOR2 = "#dad9d9";
+
+export const PRIMARY_COLOR = "#F4B44C";
+export const SECONDARY_COLOR = "#4A0E00";
+export const THIRD_COLOR = "#5E7B87";
+export const FOURTH_COLOR = "#3B5998";

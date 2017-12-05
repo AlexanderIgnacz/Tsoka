@@ -13,73 +13,118 @@ import {
 import { NavigationActions } from 'react-navigation';
 import AppConfig from "AppConfig";
 import { RequestApi, GlobalStorage } from "AppUtilities";
+import { PRIMARY_COLOR, SECONDARY_COLOR, THIRD_COLOR, FOURTH_COLOR } from "AppColors";
+import { ToggleButton } from "AppComponents";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: AppConfig.primaryColor,
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingVertical: 100,
+    width: AppConfig.windowWidth,
+    height: AppConfig.windowHeight,
+		backgroundColor: PRIMARY_COLOR,
 	},
-	userInput: {
-		borderRadius: 5,
-		borderColor: 'black',
-		borderWidth: 0.5,
-		paddingHorizontal: 10,
-		paddingVertical: 10,
-		width: AppConfig.windowWidth - 80,
-		fontSize: 16,
-		marginTop: 50,
+  subcontainer1: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  subcontainer2: {
+    flex: 1.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  subcontainer3: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  img: {
+    width: AppConfig.windowWidth * 0.4,
+    height: (AppConfig.windowWidth * 0.4) * 91 / 197,
+    marginTop: 30,
+  },
+  emailInputContainer: {
+    width: AppConfig.windowWidth * 0.8,
+    height: 40,
+    marginBottom: 30,
+  },
+  passInputContainer: {
+    width: AppConfig.windowWidth * 0.8,
+    height: 40,
+    marginBottom: 10,
+  },
+  rememberMeContainer: {
+    width: AppConfig.windowWidth * 0.8,
+    height: 22,
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    marginBottom: 40,
+  },
+  emailInput: {
+    width: AppConfig.windowWidth * 0.8,
+    height: 40,
+    borderRadius: 20,
+    borderColor: SECONDARY_COLOR,
+    borderWidth: 1,
+    paddingLeft: 45,
+    fontSize: 16,
+    color: SECONDARY_COLOR
+  },
+  emailInputIcon: {
+	  position: 'absolute',
+	  width: 23,
+    height: 16,
+    resizeMode: 'contain',
+    marginTop: 12,
+    marginLeft: 15,
+  },
+  passInputIcon: {
+    position: 'absolute',
+    width: 16,
+    height: 22,
+    resizeMode: 'contain',
+    marginTop: 9,
+    marginLeft: 20,
+  },
+  rememberMeText: {
+	  textAlign: 'center',
+    fontSize: 16,
+    marginTop: 2,
+    marginLeft: 10,
+    color: SECONDARY_COLOR,
+    fontFamily: "Helvetica Neue"
 	},
-	passInput: {
-		borderRadius: 5,
-		borderColor: 'black',
-		borderWidth: 0.5,
-		paddingHorizontal: 10,
-		paddingVertical: 10,
-		width: AppConfig.windowWidth - 80,
-		fontSize: 16,
-		marginTop: 20,
-	},
-	titleView: {
-		width: AppConfig.windowWidth,
-		height: 50,
-		backgroundColor: 'steelblue',
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	clubTitle: {
-		color: 'white',
-		fontSize: 18
-	},
-	loginView: {
-		flexDirection: 'row',
-		paddingHorizontal: 20,
-	},
-	loginBtn: {
-		paddingHorizontal: 20,
-		paddingVertical: 7,
-		backgroundColor: 'steelblue',
-		borderRadius: 5,
-		marginTop: 50,
-		marginHorizontal: 10,
-	},
-	loadingScene: {
-		position: "absolute",
-		width: AppConfig.windowWidth,
-		height: AppConfig.windowHeight,
-		alignSelf: "stretch",
-		backgroundColor: "rgba(0,0,0,0.5)",
-		alignItems: "center",
-		justifyContent: "center"
-	},
-	langView: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		paddingHorizontal: 100,
-		width: AppConfig.windowWidth,
-	},
+  loginButton: {
+    width: AppConfig.windowWidth * 0.8 - 30,
+    height: 40,
+    backgroundColor: THIRD_COLOR,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+  },
+  fbButton: {
+    width: AppConfig.windowWidth * 0.8 - 30,
+    height: 40,
+    backgroundColor: FOURTH_COLOR,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    flexDirection: 'row'
+  },
+  fb: {
+	  width: 8,
+    height: 18,
+  },
+  signup: {
+    width: AppConfig.windowWidth * 0.8,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    flexDirection: 'row',
+    marginTop: 20
+  }
 });
 
 class _LoginScene extends Component {
@@ -87,7 +132,7 @@ class _LoginScene extends Component {
 	};
 
 	static navigationOptions = {
-		title: "MainScene",
+		title: "LoginScene",
 		header: null,
 		gesturesEnabled: Platform.OS !== "ios"
 	};
@@ -96,131 +141,66 @@ class _LoginScene extends Component {
 		super(props, context);
 		this.state = {
 			isLoading: false,
+      remember: false,
 		};
-		this.user = "";
-		this.pass = "";
 	}
 
-	onLogin = () => {
-		this.setState({ isLoading: true });
-		const { navigation } = this.props;
-
-		let body = new FormData();
-		body.append("app_id", 'amgames!@#123');
-		body.append("username", this.user);
-		body.append("password", this.pass);
-
-		RequestApi(
-			"member_login/login",
-			body,
-			"POST"
-		)
-			.then(response => {
-				this.setState({ isLoading: false });
-				if (response.status === "Success") {
-					AppConfig.accessToken = response.data.access_token;
-					const resetAction = NavigationActions.reset({
-						index: 0,
-						actions: [NavigationActions.navigate({ routeName: 'Main' })],
-					});
-					navigation.dispatch(resetAction);
-				} else {
-				}
-			})
-			.catch(error => {
-				alert(error);
-				this.setState({ isLoading: false });
-			});
-	};
+  onRegister = () => {
+    const { navigation } = this.props;
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Register' })],
+    });
+    navigation.dispatch(resetAction);
+  };
 
 	componentDidMount() {
 		this.props.showSideBar(false);
 		this.props.disableSideBar(true);
 		this.props.setCurrentScene("LoginScene");
 	}
-
-	onEn = () => {
-		// here
-		AppConfig.global_string.setLanguage('en');
-		this.props.setLanguage('en');
-	};
-
-	onCh = () => {
-		AppConfig.global_string.setLanguage('ch');
-		this.props.setLanguage('ch');
-	};
-
-	onMl = () => {
-		AppConfig.global_string.setLanguage('ml');
-		this.props.setLanguage('ml');
-	};
-
-	onChangeUser = text => {
-		this.user = text;
-	};
-
-	onChangePass = text => {
-		this.pass = text;
-	};
+  
+  onChangeRemember = () => {
+	  this.setState({ remember: !this.state.remember })
+  };
+  
 
 	render() {
-		const { isLoading } = this.state;
-		const { global_string } = AppConfig;
+	  const { remember } = this.state;
 		return (
-			<View style={styles.container}>
-				<View
-					style={styles.titleView}
-				>
-					<Text style={styles.clubTitle}>{global_string.clubmemberlogin}</Text>
-				</View>
-				<View
-					style={styles.langView}
-				>
-					<TouchableOpacity style={{ width: 30, height: 22 }} onPress={this.onEn}>
-						<Image source={require('img/lang_en.png')} style={{ width: 30, height: 22 }}/>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ width: 30, height: 22 }} onPress={this.onCh}>
-						<Image source={require('img/lang_ch.png')} style={{ width: 30, height: 22 }}/>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ width: 30, height: 22 }} onPress={this.onMl}>
-						<Image source={require('img/lang_ml.png')} style={{ width: 30, height: 22 }}/>
-					</TouchableOpacity>
-				</View>
-				<View>
-					<TextInput
-						style={styles.userInput}
-						placeholder={global_string.userid}
-						onChangeText={this.onChangeUser}
-					/>
-					<TextInput
-						style={styles.passInput}
-						placeholder={global_string.password}
-						onChangeText={this.onChangePass}
-						secureTextEntry={true}
-					/>
-				</View>
-				<View
-					style={styles.loginView}
-				>
-					<TouchableOpacity
-						style={styles.loginBtn}
-					>
-						<Text style={styles.clubTitle}>{global_string.forgotpassword}</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={styles.loginBtn}
-						onPress={this.onLogin}
-					>
-						<Text style={styles.clubTitle}>{global_string.login}</Text>
-					</TouchableOpacity>
-				</View>
-				{
-					isLoading &&
-						<View style={styles.loadingScene}>
-							<ActivityIndicator animating={true} size="small" color="white" />
-						</View>
-				}
-			</View>
+      <KeyboardAwareScrollView style={{ backgroundColor: PRIMARY_COLOR }}>
+  			<View style={styles.container}>
+          <View style={styles.subcontainer1}>
+            <Image style={styles.img} source={require('img/img_splash_icon.png')} />
+          </View>
+          <View style={styles.subcontainer2}>
+            <View style={styles.emailInputContainer}>
+              <TextInput style={styles.emailInput} placeholder="Email"/>
+              <Image style={styles.emailInputIcon} source={require('img/img_login_email.png')}/>
+            </View>
+            <View style={styles.passInputContainer}>
+              <TextInput style={styles.emailInput} placeholder="Password"/>
+              <Image style={styles.passInputIcon} source={require('img/img_login_pass.png')}/>
+            </View>
+            <View style={styles.rememberMeContainer}>
+              <ToggleButton isEnabled={remember} onChange={this.onChangeRemember}/>
+              <Text style={styles.rememberMeText}>Remember Me</Text>
+            </View>
+            <TouchableOpacity style={styles.loginButton}>
+              <Text style={{ color: 'white', fontSize: 18 }}>Sign In</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.subcontainer3}>
+            <TouchableOpacity style={styles.fbButton}>
+              <Image style={styles.fb} source={require('img/img_login_fb.png')} />
+              <Text style={{ color: 'white', marginLeft: 10, fontSize: 16 }}>Continue with Facebook</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.signup} onPress={this.onRegister}>
+              <Text style={{ color: SECONDARY_COLOR, fontSize: 16 }}>Don't have an account? Sign up</Text>
+            </TouchableOpacity>
+          </View>
+  			</View>
+      </KeyboardAwareScrollView>
 		);
 	}
 }

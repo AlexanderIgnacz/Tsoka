@@ -14,7 +14,3 @@ export const SET_CURRENTSCENE = "SET_CURRENTSCENE";
 const setCurrentScene$ = createAction(SET_CURRENTSCENE);
 export const setCurrentScene = sceneName => dispatch =>
 	dispatch(setCurrentScene$(sceneName));
-
-export const SET_LANGUAGE = "SET_LANGUAGE";
-const setLanguage$ = createAction(SET_LANGUAGE);
-export const setLanguage = language => dispatch => dispatch(setLanguage$(language));
